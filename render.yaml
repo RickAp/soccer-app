@@ -21,24 +21,15 @@ services:
         value: production
       - key: PORT
         value: 3001
-    healthCheckPath: /api/docs
 
   - type: web
     name: soccer-frontend
     env: static
-    buildCommand: cd frontend && npm ci && npm run build
+    buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: soccer-api
-          property: host
-          envVarKey: RENDER_EXTERNAL_URL
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: no-cache
+        sync: false
     routes:
       - type: rewrite
         source: /*
@@ -49,4 +40,3 @@ databases:
     databaseName: soccer_db
     user: soccer_user
     plan: free
-
